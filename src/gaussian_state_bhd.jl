@@ -3,24 +3,16 @@ struct GaussianStateBHD{T}<:ContinuousUnivariateDistribution
 end
 
 #=
-rand(::AbstractRNG, d::UnivariateDistribution)
+length(d::MultivariateDistribution)
 sampler(d::Distribution)
-logpdf(d::UnivariateDistribution, x::Real)
-cdf(d::UnivariateDistribution, x::Real)
-quantile(d::UnivariateDistribution, q::Real)
-minimum(d::UnivariateDistribution)
-maximum(d::UnivariateDistribution)
-insupport(d::UnivariateDistribution, x::Real)
+eltype(d::Distribution)
+Distributions._rand!(::AbstractRNG, d::MultivariateDistribution, x::AbstractArray)
+Distributions._logpdf(d::MultivariateDistribution, x::AbstractArray)
 
-mean(d::UnivariateDistribution)
-var(d::UnivariateDistribution)
-modes(d::UnivariateDistribution)
-mode(d::UnivariateDistribution)
-skewness(d::UnivariateDistribution)
-kurtosis(d::Distribution, ::Bool)
-entropy(d::UnivariateDistribution, ::Real)
-mgf(d::UnivariateDistribution, ::Any)
-cf(d::UnivariateDistribution, ::Any)
+mean(d::MultivariateDistribution)
+var(d::MultivariateDistribution)
+entropy(d::MultivariateDistribution)
+cov(d::MultivariateDistribution)
 =#
 
 # ##### for Gaussian state in intensity-to-measurement-phase quadrature coordinate #####
