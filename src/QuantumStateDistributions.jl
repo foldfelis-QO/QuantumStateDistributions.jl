@@ -3,5 +3,5 @@ module QuantumStateDistributions
     using Distributions
     using LinearAlgebra
 
-    include("distribution.jl")
+    include("gaussian_state_bhd.jl")
 end
