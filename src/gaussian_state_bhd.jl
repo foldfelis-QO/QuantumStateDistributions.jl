@@ -4,24 +4,25 @@ end
 
 Base.length(d::GaussianStateBHD) = 2
 
-function sampler(d::GaussianStateBHD)
-end
+sampler(d::GaussianStateBHD) = d
 
 Base.eltype(::GaussianStateBHD{T}) where {T} = eltype(T)
 
 function Distributions._rand!(rng::AbstractRNG, d::GaussianStateBHD, p::AbstractVector)
-    T = eltype(d)
+    T = real(eltype(d))
 
+    p = real(p)
     p[1] = 2π * rand(rng, T)
-    p[2] = mean(d, θ) + std(d, θ) * randn(rng, T)
+    p[2] = mean(d, p[1]) + std(d, p[1]) * randn(rng, T)
 
     return p
 end
 
-function Distributions._rand!(::AbstractRNG, d::GaussianStateBHD, ps::AbstractMatrix)
-    T = eltype(d)
+function Distributions._rand!(rng::AbstractRNG, d::GaussianStateBHD, ps::AbstractMatrix)
+    T = real(eltype(d))
     n = size(ps, 2)
 
+    ps = real(ps)
     ps[1, :] .= sort!(2π .* rand(rng, T, n))
     ps[2, :] .= mean(d, view(ps, 1, :)) .+ std(d, view(ps, 1, :)) .* randn(rng, T, n)
 
