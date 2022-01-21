@@ -12,13 +12,24 @@
     @test QSD.mean_of_annihilate²(ρ) ≈ tr(a^2 * ρ)
     @test QSD.mean_of_create_annihilate(ρ) ≈ tr(c*a * ρ)
 
+    θ = π/8
+    @test QSD.mean_of_π̂ₓ²(ρ, θ) ≈ (
+        exp(-2im*θ) * tr(a^2 * ρ) +
+        exp(2im*θ) * tr(c^2 * ρ) +
+        1 + 2tr(c*a * ρ)
+    ) / 4
+    @test QSD.mean_of_π̂ₓ(ρ, θ) ≈ (
+        exp(-im*θ) * tr(a * ρ) +
+        exp(im*θ) * tr(c * ρ)
+    ) / 2
+
     θs = LinRange(0, 2π, 4096)
-    @test QSD.mean_of_π̂ₓ²(θs, ρ) ≈ (
+    @test QSD.mean_of_π̂ₓ²(ρ, θs) ≈ (
         exp.(-2im*θs) .* tr(a^2 * ρ) .+
         exp.(2im*θs) .* tr(c^2 * ρ) .+
         1 .+ 2tr(c*a * ρ)
     ) ./ 4
-    @test QSD.mean_of_π̂ₓ(θs, ρ) ≈ (
+    @test QSD.mean_of_π̂ₓ(ρ, θs) ≈ (
         exp.(-im*θs) .* tr(a * ρ) .+
         exp.(im*θs) .* tr(c * ρ)
     ) ./ 2

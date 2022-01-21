@@ -1,19 +1,44 @@
-struct GaussianStateBHD{T}<:ContinuousUnivariateDistribution
-    state::T
+struct GaussianStateBHD{T<:AbstractMatrix}<:ContinuousMultivariateDistribution
+    ρ::T
 end
 
-#=
-length(d::MultivariateDistribution)
-sampler(d::Distribution)
-eltype(d::Distribution)
-Distributions._rand!(::AbstractRNG, d::MultivariateDistribution, x::AbstractArray)
-Distributions._logpdf(d::MultivariateDistribution, x::AbstractArray)
+Base.length(d::GaussianStateBHD) = 2
 
-mean(d::MultivariateDistribution)
-var(d::MultivariateDistribution)
-entropy(d::MultivariateDistribution)
-cov(d::MultivariateDistribution)
-=#
+function sampler(d::GaussianStateBHD)
+end
+
+Base.eltype(::GaussianStateBHD{T}) where {T} = eltype(T)
+
+function Distributions._rand!(rng::AbstractRNG, d::GaussianStateBHD, p::AbstractVector)
+    T = eltype(d)
+
+    p[1] = 2π * rand(rng, T)
+    p[2] = mean(d, θ) + std(d, θ) * randn(rng, T)
+
+    return p
+end
+
+function Distributions._rand!(::AbstractRNG, d::GaussianStateBHD, ps::AbstractMatrix)
+    T = eltype(d)
+    n = size(ps, 2)
+
+    ps[1, :] .= sort!(2π .* rand(rng, T, n))
+    ps[2, :] .= mean(d, view(ps, 1, :)) .+ std(d, view(ps, 1, :)) .* randn(rng, T, n)
+
+    return ps
+end
+
+# Distributions._logpdf(d::GaussianStateBHD, x::AbstractArray)
+
+mean(d::GaussianStateBHD, θs) = real(mean_of_π̂ₓ(d.ρ, θs))
+
+var(d::GaussianStateBHD, θs) = real(mean_of_π̂ₓ²(d.ρ, θs) .- mean_of_π̂ₓ(d.ρ, θs).^2)
+
+std(d::GaussianStateBHD, θs) = real(.√(mean_of_π̂ₓ²(d.ρ, θs) .- mean_of_π̂ₓ(d.ρ, θs).^2))
+
+# entropy(d::GaussianStateBHD)
+
+# cov(d::GaussianStateBHD)
 
 # ##### for Gaussian state in intensity-to-measurement-phase quadrature coordinate #####
 
@@ -98,7 +123,7 @@ function mean_of_create_annihilate(ρ::AbstractMatrix)
     return sum(T.(0:(dim-1)) .* diag_0_of_ρ)
 end
 
-function mean_of_π̂ₓ²(θs::AbstractVector{<:Number}, ρ::AbstractMatrix)
+function mean_of_π̂ₓ²(ρ::AbstractMatrix, θs)
     # ⟨πₓ²⟩ = ⟨ââ exp(-2im θ) + â†â† exp(2im θ) + ââ† + â†â⟩ / 4
     # ⟨πₓ²⟩ = (exp(-2im θ)⟨â²⟩ + exp(2im θ)⟨â†²⟩ + 1 + 2⟨ââ†⟩) / 4
     # here, ⟨ââ† + â†â⟩ = 1 + 2⟨â†â⟩ due to the commutation relation
@@ -109,7 +134,7 @@ function mean_of_π̂ₓ²(θs::AbstractVector{<:Number}, ρ::AbstractMatrix)
     ) ./ 4
 end
 
-function mean_of_π̂ₓ(θs::AbstractVector{<:Number}, ρ::AbstractMatrix)
+function mean_of_π̂ₓ(ρ::AbstractMatrix, θs)
     # ⟨πₓ⟩ = ⟨â exp(-im θ) + â† exp(im θ)⟩ / 2
     # ⟨πₓ⟩ = (exp(-im θ)⟨â⟩ + exp(im θ)⟨â†⟩) / 2
     return (
