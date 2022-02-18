@@ -3,8 +3,8 @@
     dim = 100
 
     ρ = Matrix{T}(I, dim, dim)
-    c = QSB.Creation(T, dim)
-    a = QSB.Annihilation(T, dim)
+    c = QSB.Creation(T, dim=dim)
+    a = QSB.Annihilation(T, dim=dim)
 
     @test QSD.mean_of_create(ρ) ≈ tr(c * ρ)
     @test QSD.mean_of_create²(ρ) ≈ tr(c^2 * ρ)
