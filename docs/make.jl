@@ -6,11 +6,11 @@ DocMeta.setdocmeta!(QuantumStateDistributions, :DocTestSetup, :(using QuantumSta
 makedocs(;
     modules=[QuantumStateDistributions],
     authors="JingYu Ning <foldfelis@gmail.com> and contributors",
-    repo="https://github.com/foldfelis/QuantumStateDistributions.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/foldfelis-QO/QuantumStateDistributions.jl/blob/{commit}{path}#{line}",
     sitename="QuantumStateDistributions.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://foldfelis.github.io/QuantumStateDistributions.jl",
+        canonical="https://foldfelis-QO.github.io/QuantumStateDistributions.jl",
         assets=String[],
     ),
     pages=[
@@ -19,6 +19,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/foldfelis/QuantumStateDistributions.jl",
+    repo="github.com/foldfelis-QO/QuantumStateDistributions.jl",
     devbranch="main",
 )

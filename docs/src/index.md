@@ -4,7 +4,7 @@ CurrentModule = QuantumStateDistributions
 
 # QuantumStateDistributions
 
-Documentation for [QuantumStateDistributions](https://github.com/foldfelis/QuantumStateDistributions.jl).
+Documentation for [QuantumStateDistributions](https://github.com/foldfelis-QO/QuantumStateDistributions.jl).
 
 ```@index
 ```

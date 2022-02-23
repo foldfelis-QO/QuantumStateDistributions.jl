@@ -1,5 +1,19 @@
 export GaussianStateBHD
 
+"""
+    GaussianStateBHD
+
+A Gaussian state distribution in intensity-to-measurement-phase quadrature coordinate
+measured by balanced homodyne detection.
+
+## Example
+
+```jldoctest
+julia> d = GaussianStateBHD(SqueezedState(0.8, π, Matrix, dim=100));
+
+julia> points = rand(d, 4096);
+```
+"""
 struct GaussianStateBHD{T<:AbstractMatrix}<:ContinuousMultivariateDistribution
     ρ::T
 end
