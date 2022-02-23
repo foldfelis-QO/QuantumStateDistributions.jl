@@ -8,7 +8,7 @@ measured by balanced homodyne detection.
 
 ## Example
 
-```jldoctest
+```julia-repl
 julia> using QuantumStateBase
 
 julia> d = GaussianStateBHD(SqueezedState(0.8, π, Matrix, dim=100));
