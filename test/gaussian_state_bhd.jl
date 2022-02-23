@@ -1,3 +1,15 @@
+@testset "gaussian state bhd" begin
+    dim = 100
+    ρ = SqueezedState(0.8, π, Matrix, dim=dim)
+    d = GaussianStateBHD(ρ)
+
+    θ, x = rand(d)
+    @test 0 ≤ θ < 2π
+
+    points = rand(d, 4096)
+    @test all(0 ≤ θ < 2π for θ in points[1, :])
+end
+
 @testset "operator" begin
     T = Float64
     dim = 100

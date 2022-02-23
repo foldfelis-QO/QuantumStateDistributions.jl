@@ -1,3 +1,5 @@
+export GaussianStateBHD
+
 struct GaussianStateBHD{T<:AbstractMatrix}<:ContinuousMultivariateDistribution
     ρ::T
 end
