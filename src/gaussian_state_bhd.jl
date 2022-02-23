@@ -9,6 +9,8 @@ measured by balanced homodyne detection.
 ## Example
 
 ```jldoctest
+julia> using QuantumStateBase
+
 julia> d = GaussianStateBHD(SqueezedState(0.8, π, Matrix, dim=100));
 
 julia> points = rand(d, 4096);
