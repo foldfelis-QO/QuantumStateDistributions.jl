@@ -20,7 +20,7 @@ Construct a squeezed state via
 [`QuantumStateBase.jl`](https://github.com/foldfelis-QO/QuantumStateBase.jl)
 and declare its quantum state distribution.
 
-```julia-repl
+```julia
 julia> using QuantumStateDistributions, QuantumStateBase
 
 julia> r, θ, dim = 0.8, π/2, 100;
@@ -43,7 +43,7 @@ Sample a point from the quantum state distribution
 in intensity-to-measurement-phase quadrature coordinate
 measured by balanced homodyne detection:
 
-```julia-repl
+```julia
 julia> rand(d)
 2-element Vector{Float64}:
  0.8420476666965236
@@ -52,7 +52,7 @@ julia> rand(d)
 
 Sample `n` points from the quantum state distribution:
 
-```julia-repl
+```julia
 julia> n = 4096;
 
 julia> rand(d, n)
