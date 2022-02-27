@@ -1,7 +1,7 @@
 name = "QuantumStateDistributions"
 uuid = "78ba9c6e-4c92-4abc-8d32-e9cb1304b8da"
 authors = ["JingYu Ning <foldfelis@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
