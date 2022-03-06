@@ -34,7 +34,7 @@ function qpdf(T::Type{<:Real}, ρ, θs::AbstractRange, xs::AbstractRange)
     return qpdf!(𝛑̂_res_vec, 𝐩, ρ, θs, xs)
 end
 
-function qpdf!(𝛑̂_res_vec::Vector{Matrix{Complex{T}}}, 𝐩::Matrix{T}, ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange) where {T}
+function qpdf!(𝛑̂_res_vec::AbstractVector{Matrix{Complex{T}}}, 𝐩::Matrix{T}, ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange) where {T}
     @sync for (j, x) in enumerate(xs)
         for (i, θ) in enumerate(θs)
             Threads.@spawn 𝐩[i, j] = qpdf!(𝛑̂_res_vec[Threads.threadid()], ρ, θ, x)
@@ -52,7 +52,7 @@ function ψₙ(n::Integer, θ::Real, x::Real)
     return (2/π)^(1/4) * exp(im*n*θ - x^2) * hermiteh(n, sqrt(2)x) / sqrt(2^n * factorial(n))
 end
 
-function 𝛑̂!(result::Matrix{<:Complex}, θ::Real, x::Real; dim)
+function 𝛑̂!(result::AbstractMatrix{<:Complex}, θ::Real, x::Real; dim)
     view(result, :, 1) .= ψₙ.(big.(0:dim-1), θ, x)
     result .= view(result, :, 1) * view(result, :, 1)'
 
