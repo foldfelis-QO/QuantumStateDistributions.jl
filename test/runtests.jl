@@ -7,5 +7,6 @@ const QSB = QuantumStateBase
 const QSD = QuantumStateDistributions
 
 @testset "QuantumStateDistributions.jl" begin
+    include("pdf.jl")
     include("gaussian_state_bhd.jl")
 end
