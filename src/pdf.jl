@@ -3,13 +3,10 @@ export
     qpdf!
 
 """
-    q_pdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
+    qpdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
+    qpdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
 
-Quadrature prabability at point (θ, x)
-
-    q_pdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
-
-Quadrature prabability at points (θs, xs)
+Quadrature prabability at point (θ, x) or points (θs, xs)
 """
 qpdf(ρ, θ, x) = qpdf(Float64, ρ, θ, x)
 
