@@ -6,7 +6,9 @@ export
     qpdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
     qpdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
 
-Quadrature prabability at point (θ, x) or points (θs, xs)
+Quadrature prabability in intensity-to-measurement-phase quadrature coordinate.
+
+``p(\\rho, \\theta, x) = tr(\\hat{\\Pi}(\\theta, x) \\rho)``
 """
 qpdf(ρ, θ, x) = qpdf(Float64, ρ, θ, x)
 
@@ -31,7 +33,10 @@ function qpdf(T::Type{<:Real}, ρ, θs::AbstractRange, xs::AbstractRange)
     return qpdf!(𝛑̂_res_vec, 𝐩, ρ, θs, xs)
 end
 
-function qpdf!(𝛑̂_res_vec::AbstractVector{Matrix{Complex{T}}}, 𝐩::Matrix{T}, ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange) where {T}
+function qpdf!(
+    𝛑̂_res_vec::AbstractVector{Matrix{Complex{T}}}, 𝐩::Matrix{T},
+    ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange
+) where {T}
     @sync for (j, x) in enumerate(xs)
         for (i, θ) in enumerate(θs)
             Threads.@spawn 𝐩[i, j] = qpdf!(𝛑̂_res_vec[Threads.threadid()], ρ, θ, x)
@@ -46,7 +51,7 @@ end
 """
     ψₙ(n::Integer, θ::Real, x::Real)
 
-Eigenstate of BHD measurement operator
+Eigenstate of BHD measurement operator.
 
 ``\\psi_n(\\theta, x) = \\langle n | \\theta, x \\rangle``
 """
@@ -60,9 +65,9 @@ end
 """
     𝛑̂(θ::Real, x::Real; dim::Integer)
 
-BHD measurement operator
+BHD measurement operator.
 
-``\\hat{\\Pi}_{m, n}(\\theta, x) = \\langle m | \\hat{\\Pi}(\\theta, x) | n \\rangle = \\langle m | \\theta, x \rangle \\langle \\theta, x | n \\rangle``
+``\\hat{\\Pi}_{m, n}(\\theta, x) = \\langle m | \\hat{\\Pi}(\\theta, x) | n \\rangle = \\langle m | \\theta, x \\rangle \\langle \\theta, x | n \\rangle``
 """
 𝛑̂(θ::Real, x::Real; dim) = 𝛑̂(ComplexF64, θ, x, dim=dim)
 
