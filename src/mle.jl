@@ -39,18 +39,29 @@ function PositivePreservingIterator(data::Matrix{T}, steps::S; dim::S) where {T<
 end
 
 """
-``\\sum_j \\frac{\\hat{\\pi_j}}{p_j}``
+    frac_π_p(ppit::PositivePreservingIterator)
+
+A positive preserving iterator.
+
+``\\mathcal{R} = \\sum_i \\frac{\\hat{\\pi_i}}{p_i}``
 """
 function frac_π_p(ppit::PositivePreservingIterator{S, T}) where {S, T}
-    sum_frac_πⱼ_pⱼ = zeros(Complex{T}, ppit.dim, ppit.dim)
+    sum_frac_πᵢ_pᵢ = zeros(Complex{T}, ppit.dim, ppit.dim)
 
     for π̂ in ppit.π̂s
-        sum_frac_πⱼ_pⱼ .+= π̂ ./ tr_mul(π̂, ppit.ρ)
+        sum_frac_πᵢ_pᵢ .+= π̂ ./ tr_mul(π̂, ppit.ρ)
     end
 
-    return sum_frac_πⱼ_pⱼ
+    return sum_frac_πᵢ_pᵢ
 end
 
+"""
+    next!(ppit::PositivePreservingIterator)
+
+Iterate one step with the magic positive preserving iterator.
+
+``\\rho^{t+1} = \\mathcal{R} \\rho^t \\mathcal{R}``
+"""
 function next!(ppit::PositivePreservingIterator)
     𝐫 = frac_π_p(ppit)
 
@@ -60,6 +71,11 @@ function next!(ppit::PositivePreservingIterator)
     return ppit
 end
 
+"""
+    run!(ppit::PositivePreservingIterator)
+
+Iterate `n` step with the magic positive preserving iterator.
+"""
 function run!(ppit::PositivePreservingIterator)
     @info "estimating..."
     p = Progress(ppit.steps)
