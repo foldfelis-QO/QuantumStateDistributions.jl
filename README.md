@@ -62,3 +62,29 @@ julia> rand(d, n)
 ```
 
 ![](docs/src/assets/demo.png)
+
+## Estemate density matrix of a quantum state via MLE
+
+Generate some data from a squeezed state:
+
+```julia
+julia> data = rand(d, 81920);
+```
+
+Construct a `PositivePreservingIterator`:
+
+```julia
+julia> t = 50;
+
+julia> ppit = PositivePreservingIterator(data, t, dim=35);
+```
+
+Estermate density matrix:
+
+```julia
+julia> run!(ppit)
+
+julia> ρ_mle = ppit.ρ
+```
+
+![](docs/src/assets/mle.png)
