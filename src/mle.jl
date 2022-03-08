@@ -11,9 +11,14 @@ mutable struct PositivePreservingIterator{S, T}
 end
 
 function PositivePreservingIterator(data::Matrix{T}, steps::S; dim::S) where {T<:Real, S<:Integer}
-    π̂s = [Matrix{Complex{T}}(undef, dim, dim) for _ in 1:size(data, 2)]
-    @sync for j in 1:size(data, 2)
-        Threads.@spawn 𝛑̂!(π̂s[j], data[:, j]..., dim=dim)
+    n = size(data, 2)
+    π̂s = [Matrix{Complex{T}}(undef, dim, dim) for _ in 1:n]
+
+    @info "preprocessing..."
+    p = Progress(n)
+    Threads.@threads for j in 1:n
+        𝛑̂!(π̂s[j], data[:, j]..., dim=dim)
+        ProgressMeter.next!(p)
     end
 
     ρ = glorot_uniform(Complex{T}, dim)
@@ -28,6 +33,7 @@ end
 function frac_π_p(ppit::PositivePreservingIterator{S, T}) where {S, T}
     sum_frac_πⱼ_pⱼ = zeros(Complex{T}, ppit.dim, ppit.dim)
 
+    p = Progress(ppit.steps)
     for π̂ in ppit.π̂s
         sum_frac_πⱼ_pⱼ .+= π̂ ./ tr_mul(π̂, ppit.ρ)
     end
@@ -35,24 +41,25 @@ function frac_π_p(ppit::PositivePreservingIterator{S, T}) where {S, T}
     return sum_frac_πⱼ_pⱼ
 end
 
-
 function next!(ppit::PositivePreservingIterator)
     𝐫 = frac_π_p(ppit)
 
     ppit.ρ .= 𝐫 * ppit.ρ * 𝐫
     ppit.ρ ./= tr(ppit.ρ)
 
-    return ppit.ρ
+    return ppit
 end
 
 function run!(ppit::PositivePreservingIterator)
+    @info "estimating..."
     p = Progress(ppit.steps)
     for _ in 1:ppit.steps
         next!(ppit)
         ProgressMeter.next!(p)
     end
-end
 
+    return ppit
+end
 
 # #########
 # # utils #

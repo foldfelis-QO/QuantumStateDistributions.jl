@@ -2,9 +2,11 @@
     # gen data
     ρ = SqueezedState(0.8, π/4, Matrix, dim=100)
     d = GaussianStateBHD(ρ)
-    data = rand(d, 40960)
+    n = 8192
+    data = rand(d, n)
 
     # mle
-    ppit = PositivePreservingIterator(data, 50, dim=35)
+    t = 50
+    ppit = PositivePreservingIterator(data, t, dim=35)
     run!(ppit)
 end
