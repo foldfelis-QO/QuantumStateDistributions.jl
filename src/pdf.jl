@@ -43,11 +43,33 @@ end
 
 ##### for arb. state in intensity-to-measurement-phase quadrature coordinate #####
 
+"""
+    ψₙ(n::Integer, θ::Real, x::Real)
+
+Eigenstate of BHD measurement operator
+
+``\\psi_{\\theta, x} = \\langle \\theta, x | n \rangle``
+"""
 function ψₙ(n::Integer, θ::Real, x::Real)
     # |θ, x⟩ = ∑ₙ |n⟩ ⟨n|θ, x⟩ = ∑ₙ ψₙ(θ, x) |n⟩
     # ⟨n|θ, x⟩ = ψₙ(θ, x) = exp(im n θ) (2/π)^(1/4) exp(-x^2) Hₙ(√2 x)/√(2^n n!)
 
     return (2/π)^(1/4) * exp(im*n*θ - x^2) * hermiteh(n, sqrt(2)x) / sqrt(2^n * factorial(n))
+end
+
+"""
+    𝛑̂(θ::Real, x::Real; dim::Integer)
+
+BHD measurement operator
+
+``\\hat{\\Pi} = \\langle m | \\theta, x \rangle \\langle \\theta, x | n \rangle``
+"""
+𝛑̂(θ::Real, x::Real; dim) = 𝛑̂(ComplexF64, θ, x, dim=dim)
+
+function 𝛑̂(T::Type{<:Complex}, θ::Real, x::Real; dim)
+    result = Matrix{T}(undef, dim, dim)
+
+    return 𝛑̂!(result, θ, x, dim=dim)
 end
 
 function 𝛑̂!(result::AbstractMatrix{<:Complex}, θ::Real, x::Real; dim)
@@ -56,14 +78,6 @@ function 𝛑̂!(result::AbstractMatrix{<:Complex}, θ::Real, x::Real; dim)
 
     return result
 end
-
-function 𝛑̂(T::Type{<:Complex}, θ::Real, x::Real; dim)
-    result = Matrix{T}(undef, dim, dim)
-
-    return 𝛑̂!(result, θ, x, dim=dim)
-end
-
-𝛑̂(θ::Real, x::Real; dim) = 𝛑̂(ComplexF64, θ, x, dim=dim)
 
 # #########
 # # utils #
