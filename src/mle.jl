@@ -44,7 +44,6 @@ end
 function frac_π_p(ppit::PositivePreservingIterator{S, T}) where {S, T}
     sum_frac_πⱼ_pⱼ = zeros(Complex{T}, ppit.dim, ppit.dim)
 
-    p = Progress(ppit.steps)
     for π̂ in ppit.π̂s
         sum_frac_πⱼ_pⱼ .+= π̂ ./ tr_mul(π̂, ppit.ρ)
     end
