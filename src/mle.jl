@@ -43,7 +43,7 @@ derived by variational calculus.
 
 ## Example
 
-```jldoctest
+```julia-repl
 julia> using QuantumStateBase
 
 julia> ρ = SqueezedState(0.8, π/4, Matrix, dim=100);
