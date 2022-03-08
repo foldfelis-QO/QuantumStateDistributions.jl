@@ -10,7 +10,7 @@ mutable struct PositivePreservingIterator{S, T}
     steps::S
 end
 
-function PositivePreservingIterator(data::Matrix{T}, dim::S, steps::S) where {T<:Real, S<:Integer}
+function PositivePreservingIterator(data::Matrix{T}, steps::S; dim::S) where {T<:Real, S<:Integer}
     π̂s = [Matrix{Complex{T}}(undef, dim, dim) for _ in 1:size(data, 2)]
     @sync for j in 1:size(data, 2)
         Threads.@spawn 𝛑̂!(π̂s[j], data[:, j]..., dim=dim)
