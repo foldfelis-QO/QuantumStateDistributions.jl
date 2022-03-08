@@ -48,7 +48,7 @@ end
 
 Eigenstate of BHD measurement operator
 
-``\\psi_n(\\theta, x) = \\langle n | \\theta, x \rangle``
+``\\psi_n(\\theta, x) = \\langle n | \\theta, x \\rangle``
 """
 function ψₙ(n::Integer, θ::Real, x::Real)
     # |θ, x⟩ = ∑ₙ |n⟩ ⟨n|θ, x⟩ = ∑ₙ ψₙ(θ, x) |n⟩
@@ -62,7 +62,7 @@ end
 
 BHD measurement operator
 
-``\\hat{\\Pi}_{m, n}(\\theta, x) = \\langle m | \\hat{\\Pi}(\\theta, x) | n \rangle = \\langle m | \\theta, x \rangle \\langle \\theta, x | n \rangle``
+``\\hat{\\Pi}_{m, n}(\\theta, x) = \\langle m | \\hat{\\Pi}(\\theta, x) | n \\rangle = \\langle m | \\theta, x \rangle \\langle \\theta, x | n \\rangle``
 """
 𝛑̂(θ::Real, x::Real; dim) = 𝛑̂(ComplexF64, θ, x, dim=dim)
 
