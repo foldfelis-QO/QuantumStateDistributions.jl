@@ -67,13 +67,13 @@ julia> rand(d, n)
 
 Generate some data from a squeezed state:
 
-```julia-repl
+```julia
 julia> data = rand(d, 81920);
 ```
 
 Construct a `PositivePreservingIterator`:
 
-```julia-repl
+```julia
 julia> t = 50;
 
 julia> ppit = PositivePreservingIterator(data, t, dim=35);
@@ -81,7 +81,7 @@ julia> ppit = PositivePreservingIterator(data, t, dim=35);
 
 Estermate density matrix:
 
-```julia-repl
+```julia
 julia> run!(ppit)
 
 julia> ρ_mle = ppit.ρ
