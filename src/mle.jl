@@ -10,6 +10,11 @@ mutable struct PositivePreservingIterator{S, T}
     steps::S
 end
 
+"""
+    gen_π̂s(θs::AbstractVector, xs::AbstractVector, dim::Integer)
+
+Calculate ``\\hat{\\Pi}`` for all given ``(\\theta, x)`` pairs.
+"""
 function gen_π̂s(θs::AbstractVector{T}, xs::AbstractVector{T}, dim) where {T<:Real}
     n = length(θs)
     π̂s = [Matrix{Complex{T}}(undef, dim, dim) for _ in 1:n]
@@ -30,6 +35,24 @@ function gen_π̂s!(π̂s, θs::AbstractVector, xs::AbstractVector, dim)
     return π̂s
 end
 
+"""
+    PositivePreservingIterator(data::Matrix, steps::Integer; dim::Integer)
+
+The maximum likelihood estimator with the magical positive preserving iterator
+derived by variational calculus.
+
+## Example
+
+```jldoctest
+julia> using QuantumStateBase
+
+julia> ρ = SqueezedState(0.8, π/4, Matrix, dim=100);
+
+julia> data = rand(GaussianStateBHD(ρ), 8192);
+
+julia> ρ_mle = run!(PositivePreservingIterator(data, 50, dim=35));
+```
+"""
 function PositivePreservingIterator(data::Matrix{T}, steps::S; dim::S) where {T<:Real, S<:Integer}
     π̂s = gen_π̂s(data[1, :], data[2, :], dim)
     ρ = glorot_uniform(Complex{T}, dim)
