@@ -10,17 +10,28 @@ mutable struct PositivePreservingIterator{S, T}
     steps::S
 end
 
-function PositivePreservingIterator(data::Matrix{T}, steps::S; dim::S) where {T<:Real, S<:Integer}
-    n = size(data, 2)
+function gen_π̂s(θs::AbstractVector{T}, xs::AbstractVector{T}, dim) where {T<:Real}
+    n = length(θs)
     π̂s = [Matrix{Complex{T}}(undef, dim, dim) for _ in 1:n]
+
+    return gen_π̂s!(π̂s, θs, xs, dim)
+end
+
+function gen_π̂s!(π̂s, θs::AbstractVector, xs::AbstractVector, dim)
+    n = length(θs)
 
     @info "preprocessing..."
     p = Progress(n)
-    Threads.@threads for j in 1:n
-        𝛑̂!(π̂s[j], data[:, j]..., dim=dim)
+    Threads.@threads for i in 1:n
+        𝛑̂!(π̂s[i], θs[i], xs[i], dim=dim)
         ProgressMeter.next!(p)
     end
 
+    return π̂s
+end
+
+function PositivePreservingIterator(data::Matrix{T}, steps::S; dim::S) where {T<:Real, S<:Integer}
+    π̂s = gen_π̂s(data[1, :], data[2, :], dim)
     ρ = glorot_uniform(Complex{T}, dim)
     ρ ./= tr(ρ)
 
