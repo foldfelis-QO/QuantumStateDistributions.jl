@@ -3,6 +3,46 @@ export
     qpdf!
 
 """
+    qpdf([T=Float64], d::QuantumStateBHD, θ::Real, x::Real)
+    qpdf([T=Float64], d::QuantumStateBHD, θs::AbstractRange, xs::AbstractRange)
+    qpdf([T=Float64], d::GaussianStateBHD, θ::Real, x::Real)
+    qpdf([T=Float64], d::GaussianStateBHD, θs::AbstractRange, xs::AbstractRange)
+
+Quadrature prabability at point (θ, x) or points (θs, xs)
+"""
+qpdf(d, θ, x) = qpdf(Float64, d, θ, x)
+
+qpdf(T::Type{<:Real}, d::GaussianStateBHD, θ::Real, x::Real) = qpdf(T, d, [θ], [x])[1]
+
+function qpdf(T::Type{<:Real}, d::GaussianStateBHD, θs::AbstractRange, xs::AbstractRange)
+    m, n = length(θs), length(xs)
+
+    μs = Vector{T}(undef, m)
+    σs = Vector{T}(undef, m)
+    gaussians = Vector{Normal}(undef, m)
+    𝐩 = Matrix{T}(undef, m, n)
+
+    return qpdf!(μs, σs, gaussians, 𝐩, d, θs, xs)
+end
+
+function qpdf!(μs, σs, gaussians, 𝐩, d::GaussianStateBHD, θs::AbstractRange, xs::AbstractRange)
+    μs .= QuantumStateDistributions.mean(d, θs)
+    σs .= QuantumStateDistributions.std(d, θs)
+
+    gaussians .= Normal.(μs, σs)
+
+    for i in 1:length(θs)
+        for (j, x) in enumerate(xs)
+		    𝐩[i, j] = pdf(gaussians[i], x)
+        end
+    end
+
+    return 𝐩
+end
+
+qpdf(T::Type{<:Real}, d::QuantumStateBHD, θ, x) = qpdf(T, d.ρ, θ, x)
+
+"""
     qpdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
     qpdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
 

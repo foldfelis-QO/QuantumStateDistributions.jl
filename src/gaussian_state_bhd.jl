@@ -1,5 +1,9 @@
 export GaussianStateBHD
 
+struct QuantumStateBHD{T<:AbstractMatrix}<:ContinuousMultivariateDistribution
+    ρ::T
+end
+
 """
     GaussianStateBHD
 
