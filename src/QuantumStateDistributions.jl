@@ -6,7 +6,7 @@ module QuantumStateDistributions
     using LinearAlgebra
     using Random
 
+    include("gaussian_state_bhd.jl")
     include("pdf.jl")
     include("mle.jl")
-    include("gaussian_state_bhd.jl")
 end
