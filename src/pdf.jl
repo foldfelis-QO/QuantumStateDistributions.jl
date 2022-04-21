@@ -12,7 +12,12 @@ Quadrature prabability at point (θ, x) or points (θs, xs)
 """
 qpdf(d, θ, x) = qpdf(Float64, d, θ, x)
 
-qpdf(T::Type{<:Real}, d::GaussianStateBHD, θ::Real, x::Real) = qpdf(T, d, [θ], [x])[1]
+function qpdf(T::Type{<:Real}, d::GaussianStateBHD, θ::Real, x::Real)
+    μ = QuantumStateDistributions.mean(d, θ)
+    σ = QuantumStateDistributions.std(d, θ)
+
+    return T(pdf(Normal(μ, σ), x))
+end
 
 function qpdf(T::Type{<:Real}, d::GaussianStateBHD, θs::AbstractRange, xs::AbstractRange)
     m, n = length(θs), length(xs)
