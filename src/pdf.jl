@@ -7,10 +7,14 @@ export
     qpdf([T=Float64], d::QuantumStateBHD, θs::AbstractRange, xs::AbstractRange)
     qpdf([T=Float64], d::GaussianStateBHD, θ::Real, x::Real)
     qpdf([T=Float64], d::GaussianStateBHD, θs::AbstractRange, xs::AbstractRange)
+    qpdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
+    qpdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
 
-Quadrature prabability at point (θ, x) or points (θs, xs)
+Quadrature prabability in intensity-to-measurement-phase quadrature coordinate.
+
+``p(\\rho, \\theta, x) = tr(\\hat{\\Pi}(\\theta, x) \\rho)``
 """
-qpdf(d, θ, x) = qpdf(Float64, d, θ, x)
+qpdf(state, θ, x) = qpdf(Float64, state, θ, x)
 
 function qpdf(T::Type{<:Real}, d::GaussianStateBHD, θ::Real, x::Real)
     μ = QuantumStateDistributions.mean(d, θ)
@@ -46,16 +50,6 @@ function qpdf!(μs, σs, gaussians, 𝐩, d::GaussianStateBHD, θs::AbstractRang
 end
 
 qpdf(T::Type{<:Real}, d::QuantumStateBHD, θ, x) = qpdf(T, d.ρ, θ, x)
-
-"""
-    qpdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
-    qpdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
-
-Quadrature prabability in intensity-to-measurement-phase quadrature coordinate.
-
-``p(\\rho, \\theta, x) = tr(\\hat{\\Pi}(\\theta, x) \\rho)``
-"""
-qpdf(ρ::AbstractArray, θ, x) = qpdf(Float64, ρ, θ, x)
 
 function qpdf(T::Type{<:Real}, ρ::AbstractArray, θ::Real, x::Real)
     dim = size(ρ, 1)
