@@ -3,14 +3,21 @@ export
     qpdf!
 
 """
-    qpdf([T=Float64], d::QuantumStateBHD, θ::Real, x::Real)
-    qpdf([T=Float64], d::QuantumStateBHD, θs::AbstractRange, xs::AbstractRange)
     qpdf([T=Float64], d::GaussianStateBHD, θ::Real, x::Real)
     qpdf([T=Float64], d::GaussianStateBHD, θs::AbstractRange, xs::AbstractRange)
+    qpdf([T=Float64], d::QuantumStateBHD, θ::Real, x::Real)
+    qpdf([T=Float64], d::QuantumStateBHD, θs::AbstractRange, xs::AbstractRange)
     qpdf([T=Float64], ρ::AbstractArray, θ::Real, x::Real)
     qpdf([T=Float64], ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
 
 Quadrature prabability in intensity-to-measurement-phase quadrature coordinate.
+
+## Arguments
+
+* `T`: Data type, default as Float64.
+* `state`: State can be `GaussianStateBHD` distribution, `QuantumStateBHD` distribution or density matrix.
+* `θ`: Measurement phase, can be `Real` or `AbstractRange`.
+* `x`: Intensity in quadrature coordinate, can be `Real` or `AbstractRange`.
 
 ``p(\\rho, \\theta, x) = tr(\\hat{\\Pi}(\\theta, x) \\rho)``
 """
@@ -51,20 +58,20 @@ end
 
 qpdf(T::Type{<:Real}, d::QuantumStateBHD, θ, x) = qpdf(T, d.ρ, θ, x)
 
-function qpdf(T::Type{<:Real}, ρ::AbstractArray, θ::Real, x::Real)
+function qpdf(T::Type{<:Real}, ρ::AbstractMatrix, θ::Real, x::Real)
     dim = size(ρ, 1)
     𝛑̂_res = Matrix{Complex{T}}(undef, dim, dim)
 
     return qpdf!(𝛑̂_res, ρ, θ, x)
 end
 
-function qpdf!(𝛑̂_res::AbstractMatrix, ρ::AbstractArray, θ::Real, x::Real)
+function qpdf!(𝛑̂_res::AbstractMatrix, ρ::AbstractMatrix, θ::Real, x::Real)
     dim = size(ρ, 1)
 
     return real_tr_mul(𝛑̂!(𝛑̂_res, θ, x, dim=dim), ρ)
 end
 
-function qpdf(T::Type{<:Real}, ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange)
+function qpdf(T::Type{<:Real}, ρ::AbstractMatrix, θs::AbstractRange, xs::AbstractRange)
     dim = size(ρ, 1)
     𝛑̂_res_vec = [Matrix{Complex{T}}(undef, dim, dim) for _ in 1:Threads.nthreads()]
     𝐩 = Matrix{T}(undef, length(θs), length(xs))
@@ -74,7 +81,7 @@ end
 
 function qpdf!(
     𝛑̂_res_vec::AbstractVector{Matrix{Complex{T}}}, 𝐩::Matrix{T},
-    ρ::AbstractArray, θs::AbstractRange, xs::AbstractRange
+    ρ::AbstractMatrix, θs::AbstractRange, xs::AbstractRange
 ) where {T}
     @sync for (j, x) in enumerate(xs)
         for (i, θ) in enumerate(θs)
